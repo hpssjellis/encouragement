@@ -27,7 +27,7 @@ const myReceiveAddress =
 iota
   .findTransactionObjects({ addresses: [myReceiveAddress] })
   .then(response => {
-   // console.log(response)
+       console.log(response)
        global.myResponse22 = '<h2>2.2-fetch-hello.js</h2>' + '<pre id="myPre01">'+JSON.stringify(response, null, 3)+'</pre>' + '<hr>';  // hopefully this is global
 
   })
