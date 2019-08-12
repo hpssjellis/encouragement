@@ -3,20 +3,38 @@ var express = require('express');
 var app = express();
 
 
-const mySeed =
-  'DONOTSTOREYOURSEEDONAPUBLICGITHUBSITEASANYONECANSTEALALLYOUR9IOTATOKENSKEEPITSAFE'   //temp1 seed
+const iotaLibrary = require('@iota/core')
+const Converter = require('@iota/converter')
+
+
+
+const mySeed = 'DONOTSTOREYOURSEEDONAPUBLICGITHUBSITEASANYONECANSTEALALLYOUR9IOTATOKENSKEEPITSAFE'   //Your secret seed. All your tokens
+
+global.myRecieveIndex = 0    // defines when to start showing the replies! Careful will not show results if above latest recive address
+
+
 
 global.myReceiveAddress = 'QNLY9LSWBFKMXTJSYJQOJXDJ99HMXHLJYLOLCV9ONOUUZQZAXIURIKGZ9GJ9UBPKUAUVTWZDGPZGST9DDBCKKMR9PD' // This will be immediately generated
-global.myRecieveIndex = 0
 
 const myMaxArray = 12
 global.myArrayOfAddresses = new Array(myMaxArray)
 
-const iotaLibrary = require('@iota/core')
+
+
+
 
 const iota = iotaLibrary.composeAPI({
     provider: 'https://iotanode.us:443'   // This is the main net not development
 })   //  provider: 'https://nodes.devnet.thetangle.org:443'
+
+
+
+
+
+
+
+
+
 
 
 function myLoadAddressesFromSeed(myPassedSeed){
@@ -112,13 +130,34 @@ async function myCheckTransactionUsingAddress(myRAddress){
 iota
   .findTransactionObjects({ addresses: [myRAddress] })
   .then(response => {
-       console.log(response)
+
+   let myBig = response[0].signatureMessageFragment
+    console.log('Encoded message:')
+    console.log(myBig)
+    console.log(' ')
+
+    console.log(myBig.length)
+    if (myBig.length % 2 == 0){ console.log('EVEN')} else {
+       myBigEven = myBig.substring(0, myBig.length - 1);
+       console.log('Now even at '+myBigEven.length)
+       myBig = myBigEven
+    }
+
+
+    const myMessage = Converter.trytesToAscii(myBig)
+    console.log('Decoded message:')
+    console.log(myMessage)
+
+
+
+      // console.log(iota.trytesToAscii(response[0].signatureMessageFragment))
        console.log(' ')
-       console.log(response[0].address)
-       console.log(response[0].value)
+     //  console.log(response[0].address)
+     //  console.log(response[0].value)
        console.log(' ')
       // global.myResponse2 = '<h2>2.2-fetch-hello.js</h2>' + '<pre id="myPre01">'+JSON.stringify(response, null, 3)+'</pre>' + '<hr>';  // hopefully this is global
-       global.myResponse2 += 'response[0].address: '+  response[0].address   + '<br>response[0].value: '+ response[0].value + '<br>';  // hopefully this is global
+       global.myResponse2 += 'response[0].address: '+  response[0].address   + '<br>response[0].value: '+ response[0].value + '<br> message: '+ myMessage + '<br>';  // hopefully this is global
+
        if (response[0].value == 0  ){ global.myResponse2 += 'Sorry no comment for you!<hr>'}
        if (response[0].value > 0  && response[0].value < 10  ){ global.myResponse2 += 'You will have a great day! <hr>'}
        if (response[0].value >= 10 ){ global.myResponse2 += 'Good luck you may need it today! <hr>'}
