@@ -24,7 +24,7 @@ function myLoadAddressesFromSeed(myPassedSeed){
 	var options = {
 		checksum: true,
 		security: 2,
-        index : 0,
+        index : global.myRecieveIndex ,
         total : myMaxArray
        // total : 1   //,
 		//index: 0     // if 0 it should always return the latest address
@@ -37,7 +37,7 @@ iota
   .getNewAddress(myPassedSeed, options)
   .then(myGenAddress => {
      console.log('Your address is: ' + myGenAddress )
-     global.myResponse0 = '<h2>All'+myMaxArray+' Addresses: </h2>' + '<pre id="myPre01">'+JSON.stringify(myGenAddress, null, 3)+'</pre>' + '<hr>';  // hopefully this is global
+     global.myResponse0 = '<h2>My Next '+myMaxArray+' Addresses: </h2>' + '<pre id="myPre01">'+JSON.stringify(myGenAddress, null, 3)+'</pre>' + '<hr>';  // hopefully this is global
 
      global.myArrayOfAddresses = myGenAddress
 
@@ -70,13 +70,13 @@ iota
   .getNewAddress(myPassedSeed, options)
   .then(myGenAddress => {
      console.log('Your address is: ' + myGenAddress )
-     global.myResponse1 = '<h2>Send a small amount of tokens to: </h2>' + '<pre id="myPre01">'+JSON.stringify(myGenAddress, null, 3)+'</pre>' + '<hr>';  // hopefully this is global
+     global.myResponse1 += '<h2>Send a small amount of tokens to: </h2>' + '<pre id="myPre01">'+JSON.stringify(myGenAddress, null, 3)+'</pre>' + '<hr>';  // hopefully this is global
      if (global.myReceiveAddress == myGenAddress){
         console.log('No change your recieve address is still: ' + myGenAddress )
-        global.myResponse1 += 'No change your recieve address is still: ' + myGenAddress
+        global.myResponse1 += 'No change your recieve address is still: ' + myGenAddress + '<br>'
      } else {
         console.log('Cool a change has occured and your new address is: ' + myGenAddress )
-        global.myResponse1 += 'Cool a change has occured and your new address is: ' + myGenAddress
+        global.myResponse1 += 'Cool a change has occured and your new address is: ' + myGenAddress+'<hr>'
      }
      global.myReceiveAddress = myGenAddress
 
@@ -84,21 +84,21 @@ iota
 //////////////////////////////////////// find out the previous index
 
 
-     //for (myLoop=0; myLoop<myMaxArray; myLoop++){
+
          let myNewIndex = global.myArrayOfAddresses.indexOf(global.myReceiveAddress)
-          console.log('The index is: '+myNewIndex)
-          for (myLoop=global.myRecieveIndex ; myLoop < myNewIndex; myLoop++){   // loop from old address index to index before unused address
-             console.log(myLoop)
-             myCheckTransactionUsingAddress(global.myArrayOfAddresses[myLoop])
-          }
+         if (myNewIndex > 0){
+            console.log('The index is: '+myNewIndex)
+             for (myLoop=global.myRecieveIndex ; myLoop < myNewIndex; myLoop++){   // loop from old address index to index before unused address
+               console.log(myLoop)
+               myCheckTransactionUsingAddress(global.myArrayOfAddresses[myLoop])
+             }
 
-         global.myRecieveIndex =  myNewIndex    // change old address index to new address index
+            global.myRecieveIndex +=  myNewIndex    // change old address index to new address index plus the old one
+            global.myResponse1 += global.myResponse0
+            myLoadAddressesFromSeed(mySeed)      // reset main array of addresses
 
-    // }
+       }    // if index > 0
 
-
-
-     //myCheckTransactionUsingAddress(global.myReceiveAddress)   // find last index
   })
   .catch(err => {
     console.log(err)
@@ -113,10 +113,15 @@ iota
   .findTransactionObjects({ addresses: [myRAddress] })
   .then(response => {
        console.log(response)
+       console.log(' ')
+       console.log(response[0].address)
        console.log(response[0].value)
+       console.log(' ')
       // global.myResponse2 = '<h2>2.2-fetch-hello.js</h2>' + '<pre id="myPre01">'+JSON.stringify(response, null, 3)+'</pre>' + '<hr>';  // hopefully this is global
-       global.myResponse2 += 'response[0].address: '+  response[0].address   + 'response[0].value: '+ response[0].value + '<hr>';  // hopefully this is global
-
+       global.myResponse2 += 'response[0].address: '+  response[0].address   + '<br>response[0].value: '+ response[0].value + '<br>';  // hopefully this is global
+       if (response[0].value == 0  ){ global.myResponse2 += 'Sorry no comment for you!<hr>'}
+       if (response[0].value > 0  && response[0].value < 10  ){ global.myResponse2 += 'You will have a great day! <hr>'}
+       if (response[0].value >= 10 ){ global.myResponse2 += 'Good luck you may need it today! <hr>'}
   })
   .catch(err => {
     console.error(err)
@@ -146,7 +151,7 @@ myLoadAddressesFromSeed(mySeed)
 myGenerateAddressFromSeed(mySeed)
 let myTimer = setInterval(function(){
          myGenerateAddressFromSeed(mySeed)
-     }, 100000);   // end setInterval
+     }, 40000);   // end setInterval
 
 
 
@@ -155,7 +160,9 @@ let myTimer = setInterval(function(){
 
 app.get('/', function(req, res) {
    let myCombined = `
-       <h3 align=center>IOT enocuramgemnt </h3>
+       <meta http-equiv="refresh" content="10"/>
+       <h3 align=center>IOTA Good Karma Reverse Pyschology Encouragment </h3>
+       Send a few IOTA to the below mentioned address <br>
        `+global.myResponse0+`
        `+global.myResponse1+`
        `+global.myResponse2+`
