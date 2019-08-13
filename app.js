@@ -14,11 +14,14 @@ global.myRecieveIndex = 0    // defines when to start showing the replies! Caref
 
 const myRefreshInterval = 40     // 40 seconds for the page and data to refresh
 
-global.myReceiveAddress = '' // This will be immediately generated
+global.myReceiveAddress = 'CYM9IKWWVVTCCFKYXC9HMXISTAEDKFLLW9ABQALFNFKGZZDEKANCFSABKNNRFJRIXGZNBZQZMOBCIEUGCEMIMJWOP9' // This will be immediately generated
 
 const myMaxArray = 12
 global.myArrayOfAddresses = new Array(myMaxArray)
 
+global.myResponse0 = ''
+global.myResponse1 = ''
+global.myResponse2 = ''
 
 
 
@@ -55,7 +58,7 @@ iota
   .getNewAddress(myPassedSeed, options)
   .then(myGenAddress => {
      console.log('Your address is: ' + myGenAddress )
-     global.myResponse0 = '<h2>My Next '+myMaxArray+' Addresses: </h2>' + '<pre id="myPre01">'+JSON.stringify(myGenAddress, null, 3)+'</pre>' + '<hr>';  // hopefully this is global
+  //   global.myResponse0 = '<h2>My Next '+myMaxArray+' Addresses: </h2>' + '<pre id="myPre01">'+JSON.stringify(myGenAddress, null, 3)+'</pre>' + '<hr>';  // hopefully this is global
 
      global.myArrayOfAddresses = myGenAddress
 
@@ -88,13 +91,13 @@ iota
   .getNewAddress(myPassedSeed, options)
   .then(myGenAddress => {
      console.log('Your address is: ' + myGenAddress )
-     global.myResponse1 += '<h2>Send a small amount of tokens to: </h2>' + '<pre id="myPre01">'+JSON.stringify(myGenAddress, null, 3)+'</pre>' + '<hr>';  // hopefully this is global
+   //  global.myResponse1 += '<h2>Send a small amount of tokens to: </h2>' + '<pre id="myPre01">'+JSON.stringify(myGenAddress, null, 3)+'</pre>' + '<hr>';  // hopefully this is global
      if (global.myReceiveAddress == myGenAddress){
         console.log('No change your recieve address is still: ' + myGenAddress )
-        global.myResponse1 += 'No change your recieve address is still: ' + myGenAddress + '<br>'
+      //  global.myResponse1 += 'No change your recieve address is still: ' + myGenAddress + '<br>'
      } else {
         console.log('Cool a change has occured and your new address is: ' + myGenAddress )
-        global.myResponse1 += 'Cool a change has occured and your new address is: ' + myGenAddress+'<hr>'
+      //  global.myResponse1 += 'Cool a change has occured and your new address is: ' + myGenAddress+'<hr>'
      }
      global.myReceiveAddress = myGenAddress
 
@@ -127,19 +130,63 @@ iota
 
 
 
-async function myResponseToTokens(theResponse, TheMessage){
+function myResponseToTokens(theResponse, TheMessage){
 
-    if (theResponse == 0  ){                     global.myResponse2 += 'Sorry no comment for you! '+TheMessage+'<hr>'}
-    if (theResponse > 0  && theResponse < 10  ){ global.myResponse2 += 'You will have a great day! '+TheMessage+'<hr>'}
-    if (theResponse >= 10 ){                     global.myResponse2 += 'Good luck you may need it today! '+TheMessage+'<hr>'}
-
+return 'Good luck you may need it today! '+TheMessage
 }
 
 
 
+function myResponseEncouraging(theResponse, TheMessage){
 
+    const myMaxArrayNice = 7
+    let myNiceArray = new Array()
+    myNiceArray[0] = '0.... ' + TheMessage
+    myNiceArray[1] = '1'
+    myNiceArray[2] = '2........ ' + TheMessage
+    myNiceArray[3] = '3'
+    myNiceArray[4] = '4'
+    myNiceArray[5] = '5'
+    myNiceArray[6] = '6.................... '+ TheMessage
 
+    let myRand = Math.floor(Math.random() * myMaxArrayNice) ;
 
+   return  myNiceArray[myRand]
+}
+
+function myResponseOk(theResponse, TheMessage){
+
+    const myMaxArrayNice = 7
+    let myNiceArray = new Array()
+    myNiceArray[0] = '0.... ' + TheMessage
+    myNiceArray[1] = '1'
+    myNiceArray[2] = '2........ ' + TheMessage
+    myNiceArray[3] = '3'
+    myNiceArray[4] = '4'
+    myNiceArray[5] = '5'
+    myNiceArray[6] = '6.................... '+ TheMessage
+
+    let myRand = Math.floor(Math.random() * myMaxArrayNice) ;
+
+   return  myNiceArray[myRand]
+}
+
+function myResponseNasty(theResponse, TheMessage){
+
+    const myMaxArrayNice = 7
+    let myNiceArray = new Array()
+    myNiceArray[0] = '0.... ' + TheMessage
+    myNiceArray[1] = '1'
+    myNiceArray[2] = '2........ ' + TheMessage
+    myNiceArray[3] = '3'
+    myNiceArray[4] = '4'
+    myNiceArray[5] = '5'
+    myNiceArray[6] = 'Life is '+TheMessage+' what happens to you while you’re busy making other plans –John Lennon'
+
+    let myRand = Math.floor(Math.random() * myMaxArrayNice) ;
+
+   return  myNiceArray[myRand]
+}
 
 
 
@@ -152,9 +199,9 @@ iota
 
 
 
-    console.log('response.length' )
-    console.log(response.length )
-    console.log(' ')
+   // console.log('response.length' )
+  //  console.log(response.length )
+  //  console.log(' ')
 
 
 
@@ -176,18 +223,28 @@ iota
     const myMessage = Converter.trytesToAscii(myBig)
 
       // global.myResponse2 = '<h2>2.2-fetch-hello.js</h2>' + '<pre id="myPre01">'+JSON.stringify(response, null, 3)+'</pre>' + '<hr>';  // hopefully this is global
-       global.myResponse2 += 'response['+myResponseLoop+'].address: '+  response[myResponseLoop].address   + '<br>response['+myResponseLoop+'].value: '+ response[myResponseLoop].value + '<br> message: '+ myMessage + '<br>';  // hopefully this is global
+      // global.myResponse2 += 'response['+myResponseLoop+'].address: '+  response[myResponseLoop].address   + '<br>response['+myResponseLoop+'].value: '+ response[myResponseLoop].value + '<br> message: '+ myMessage + '<br>';  // hopefully this is global
 
 
 
-       myResponseToTokens(response[myResponseLoop].value, myMessage)
+     //  myResponseToTokens(response[myResponseLoop].value, myMessage)
+
+       global.myResponse2 += '<tr><td>'+myMessage+'</td>'
+       global.myResponse2 += '<td>'+response[myResponseLoop].value+'</td>'
+
+       if (response[myResponseLoop].value == 0  ){                                                 global.myResponse2 += '<td>Sorry no comment for you!</td>'  }
+       if (response[myResponseLoop].value >= 1  && response[myResponseLoop].value < 1000  ){       global.myResponse2 += '<td>'+ myResponseEncouraging(response[myResponseLoop].value, myMessage) + '</td>'  }
+       if (response[myResponseLoop].value >= 1000  && response[myResponseLoop].value < 1000000  ){ global.myResponse2 += '<td>'+ myResponseOk(response[myResponseLoop].value, myMessage) + '</td>'  }
+       if (response[myResponseLoop].value == 1000000 ){                                            global.myResponse2 += '<td>'+ myResponseEncouraging(response[myResponseLoop].value, myMessage) + '</td>'  }
+       if (response[myResponseLoop].value >  1000000 ){                                            global.myResponse2 += '<td>'+ myResponseNasty(response[myResponseLoop].value, myMessage) + '</td>'  }
 
      //  if (response[myResponseLoop].value == 0  ){ global.myResponse2 += 'Sorry no comment for you!<hr>'}
      //  if (response[myResponseLoop].value > 0  && response[myResponseLoop].value < 10  ){ global.myResponse2 += 'You will have a great day! <hr>'}
      //  if (response[myResponseLoop].value >= 10 ){ global.myResponse2 += 'Good luck you may need it today! <hr>'}
 
 
-
+     //  global.myResponse2 += '<td>response[myResponseLoop].timestamp</td>'
+       global.myResponse2 += '</tr>'
 
 
   } // end for response loop
@@ -204,7 +261,22 @@ iota
 }
 
 
+const myCountScript = `
 
+function myCountDown(mySeconds){
+
+var downloadTimer = setInterval(function(){
+  document.getElementById('myDivCountdown01').innerHTML = 'Refresh in '+mySeconds + ' seconds.';
+  mySeconds -= 1;
+  if(mySeconds <= 0){
+    clearInterval(downloadTimer);
+    document.getElementById('myDivCountdown01').innerHTML = 'Finished'
+  }
+}, 1000);
+
+}
+
+`
 
 
 
@@ -218,7 +290,7 @@ iota
 //myGenerateAddressFromSeed(mySeed)      // called using an interval
 //myCheckTransactionUsingAddress(global.myReceiveAddress)   // called inside myGenerateAddressFromSeed
 
-
+//myGenerateAddressFromSeed(mySeed)
 
 myLoadAddressesFromSeed(mySeed)
 
@@ -230,24 +302,32 @@ let myTimer = setInterval(function(){
 
 
 
-
+//setTimeout(function(){
 
 app.get('/', function(req, res) {
    let myCombined = `
        <meta http-equiv="refresh" content="`+myRefreshInterval+`"/>
-       <h3 align=center>IOTA Good Karma Reverse Pyschology Encouragment </h3>
-       Send a few IOTA to the below mentioned address <br>
+       <h3 align=center>IOTA Daily Reverse Pyschology Encouragment </h3>
+       For a reply here send a few IOTA using whatever wallet you have to the below mentioned address
+       with a first name only in the IOTA message <br>
+       <input type=text value="`+global.myReceiveAddress+`" size = "130">
+       <div id="myDivCountdown01">...</div>
+       <script>
+       ` + myCountScript +` myCountDown(`+myRefreshInterval+`)
+       </script>
        `+global.myResponse0+`
        `+global.myResponse1+`
+       <table border=1>
+       <tr><th>From</th><th>Tokens</th><th>Response</th></tr>
        `+global.myResponse2+`
-
+     </table>
 
    `    // end long string
    res.send(myCombined);
 
 });
 
-
+//}, 10000);    // just a bit of time for the program to get started
 
 
 
