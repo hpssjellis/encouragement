@@ -12,9 +12,9 @@ const mySeed = 'DONOTSTOREYOURSEEDONAPUBLICGITHUBSITEASANYONECANSTEALALLYOUR9IOT
 
 global.myRecieveIndex = 0    // defines when to start showing the replies! Careful will not show results if above latest recive address
 
+const myRefreshInterval = 40     // 40 seconds for the page and data to refresh
 
-
-global.myReceiveAddress = 'QNLY9LSWBFKMXTJSYJQOJXDJ99HMXHLJYLOLCV9ONOUUZQZAXIURIKGZ9GJ9UBPKUAUVTWZDGPZGST9DDBCKKMR9PD' // This will be immediately generated
+global.myReceiveAddress = '' // This will be immediately generated
 
 const myMaxArray = 12
 global.myArrayOfAddresses = new Array(myMaxArray)
@@ -126,41 +126,76 @@ iota
 }
 
 
+
+async function myResponseToTokens(theResponse, TheMessage){
+
+    if (theResponse == 0  ){                     global.myResponse2 += 'Sorry no comment for you! '+TheMessage+'<hr>'}
+    if (theResponse > 0  && theResponse < 10  ){ global.myResponse2 += 'You will have a great day! '+TheMessage+'<hr>'}
+    if (theResponse >= 10 ){                     global.myResponse2 += 'Good luck you may need it today! '+TheMessage+'<hr>'}
+
+}
+
+
+
+
+
+
+
+
+
+
+
 async function myCheckTransactionUsingAddress(myRAddress){
 iota
   .findTransactionObjects({ addresses: [myRAddress] })
   .then(response => {
 
-   let myBig = response[0].signatureMessageFragment
-    console.log('Encoded message:')
-    console.log(myBig)
+
+
+    console.log('response.length' )
+    console.log(response.length )
     console.log(' ')
 
-    console.log(myBig.length)
+
+
+  for (myResponseLoop = 0; myResponseLoop < response.length; myResponseLoop++) {
+
+   let myBig = response[myResponseLoop].signatureMessageFragment
+   // console.log('Encoded message:')
+   // console.log(myBig)
+   // console.log(' ')
+
+   // console.log(myBig.length)
     if (myBig.length % 2 == 0){ console.log('EVEN')} else {
        myBigEven = myBig.substring(0, myBig.length - 1);
-       console.log('Now even at '+myBigEven.length)
+     //  console.log('Now even at '+myBigEven.length)
        myBig = myBigEven
-    }
+    }   // end even odd loop
 
 
     const myMessage = Converter.trytesToAscii(myBig)
-    console.log('Decoded message:')
-    console.log(myMessage)
 
-
-
-      // console.log(iota.trytesToAscii(response[0].signatureMessageFragment))
-       console.log(' ')
-     //  console.log(response[0].address)
-     //  console.log(response[0].value)
-       console.log(' ')
       // global.myResponse2 = '<h2>2.2-fetch-hello.js</h2>' + '<pre id="myPre01">'+JSON.stringify(response, null, 3)+'</pre>' + '<hr>';  // hopefully this is global
-       global.myResponse2 += 'response[0].address: '+  response[0].address   + '<br>response[0].value: '+ response[0].value + '<br> message: '+ myMessage + '<br>';  // hopefully this is global
+       global.myResponse2 += 'response['+myResponseLoop+'].address: '+  response[myResponseLoop].address   + '<br>response['+myResponseLoop+'].value: '+ response[myResponseLoop].value + '<br> message: '+ myMessage + '<br>';  // hopefully this is global
 
-       if (response[0].value == 0  ){ global.myResponse2 += 'Sorry no comment for you!<hr>'}
-       if (response[0].value > 0  && response[0].value < 10  ){ global.myResponse2 += 'You will have a great day! <hr>'}
-       if (response[0].value >= 10 ){ global.myResponse2 += 'Good luck you may need it today! <hr>'}
+
+
+       myResponseToTokens(response[myResponseLoop].value, myMessage)
+
+     //  if (response[myResponseLoop].value == 0  ){ global.myResponse2 += 'Sorry no comment for you!<hr>'}
+     //  if (response[myResponseLoop].value > 0  && response[myResponseLoop].value < 10  ){ global.myResponse2 += 'You will have a great day! <hr>'}
+     //  if (response[myResponseLoop].value >= 10 ){ global.myResponse2 += 'Good luck you may need it today! <hr>'}
+
+
+
+
+
+  } // end for response loop
+
+
+
+
+
   })
   .catch(err => {
     console.error(err)
@@ -190,7 +225,7 @@ myLoadAddressesFromSeed(mySeed)
 myGenerateAddressFromSeed(mySeed)
 let myTimer = setInterval(function(){
          myGenerateAddressFromSeed(mySeed)
-     }, 40000);   // end setInterval
+}, myRefreshInterval*1000);   // end setInterval
 
 
 
@@ -199,7 +234,7 @@ let myTimer = setInterval(function(){
 
 app.get('/', function(req, res) {
    let myCombined = `
-       <meta http-equiv="refresh" content="10"/>
+       <meta http-equiv="refresh" content="`+myRefreshInterval+`"/>
        <h3 align=center>IOTA Good Karma Reverse Pyschology Encouragment </h3>
        Send a few IOTA to the below mentioned address <br>
        `+global.myResponse0+`
